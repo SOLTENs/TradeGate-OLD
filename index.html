@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TRADE GATE</title>
+<style>
+  * { -webkit-box-sizing: border-box; box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0c;
+    color: #e8e8f0;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    min-height: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    padding: 0 0 32px;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #1e1e28;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background: #0a0a0c;
+    z-index: 10;
+  }
+
+  .topbar-logo {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #44445a;
+    text-transform: uppercase;
+  }
+
+  .reset-btn {
+    background: transparent;
+    border: 1px solid #1e1e28;
+    color: #44445a;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    -webkit-transition: all 0.15s;
+    transition: all 0.15s;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  /* PROGRESS */
+  .progress-bar { height: 2px; background: #1e1e28; width: 100%; }
+  .progress-fill {
+    height: 100%;
+    background: #c8ff00;
+    -webkit-transition: width 0.4s ease;
+    transition: width 0.4s ease;
+  }
+
+  /* SCREEN */
+  .screen {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    padding: 32px 20px 20px;
+  }
+
+  .step-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10px;
+    color: #44445a;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .screen-title {
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #e8e8f0;
+    margin-bottom: 32px;
+  }
+
+  /* BUTTON GRID */
+  .btn-grid {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+  }
+  .btn-grid > * + * { margin-top: 8px; }
+
+  /* BASE OPTION BUTTON */
+  .option-btn {
+    background: #111116;
+    border: 1px solid #1e1e28;
+    color: #e8e8f0;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    -webkit-transition: all 0.12s;
+    transition: all 0.12s;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* selected green (screen 1 & 3 multi-select) */
+  .option-btn-green {
+    background: rgba(0,232,122,0.12);
+    border: 1px solid #00e87a;
+    color: #00e87a;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* danger (red) */
+  .option-btn-danger {
+    background: #111116;
+    border: 1px solid rgba(255,68,85,0.35);
+    color: #ff4455;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* yellow (selected warning state) */
+  .option-btn-yellow {
+    background: rgba(255,204,0,0.1);
+    border: 1px solid #ffcc00;
+    color: #ffcc00;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* YES / NO full-height buttons */
+  .yesno-wrap {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+  }
+  .yesno-wrap > * + * { margin-top: 10px; }
+
+  .yn-btn {
+    border: 1px solid #1e1e28;
+    background: #111116;
+    color: #e8e8f0;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 120px;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  /* NEXT / action button */
+  .next-btn {
+    margin-top: 20px;
+    background: #c8ff00;
+    color: #0a0a0c;
+    border: none;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 18px;
+    cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* SKIP button (screen 5) */
+  .skip-btn {
+    margin-top: 20px;
+    background: #111116;
+    color: #e8e8f0;
+    border: 1px solid #1e1e28;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 18px;
+    cursor: pointer;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* semmi button (screen 4) */
+  .semmi-btn {
+    background: transparent;
+    border: 1px solid #1e1e28;
+    color: #44445a;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 14px 20px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    -webkit-appearance: none;
+    border-radius: 0;
+    display: block;
+    margin-top: 8px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #1e1e28;
+    margin: 10px 0;
+  }
+
+  /* SETUP DROPDOWNS (final screen) */
+  .setup-container {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+  }
+  .setup-container > * + * { margin-top: 12px; }
+
+  .setup-block { border: 1px solid #1e1e28; overflow: hidden; }
+  .setup-block-open { border: 1px solid #c8ff00; overflow: hidden; }
+
+  .setup-header {
+    background: #111116;
+    padding: 18px 20px;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #e8e8f0;
+    width: 100%;
+    -webkit-appearance: none;
+    border: none;
+  }
+  .setup-header-open {
+    background: #111116;
+    padding: 18px 20px;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #c8ff00;
+    width: 100%;
+    -webkit-appearance: none;
+    border: none;
+  }
+
+  .chevron     { color: #44445a; font-size: 12px; }
+  .chevron-open{ color: #c8ff00; font-size: 12px; }
+
+  .setup-list     { display: none; border-top: 1px solid #1e1e28; }
+  .setup-list-open{ display: block; border-top: 1px solid #1e1e28; }
+
+  .setup-item {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #44445a;
+    border-bottom: 1px solid #1e1e28;
+    cursor: default;
+  }
+  .setup-item:last-child { border-bottom: none; }
+
+  /* TRADE ALLOWED screen */
+  .allowed-screen {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .allowed-title {
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #c8ff00;
+    margin-bottom: 8px;
+  }
+  .allowed-title-white {
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #e8e8f0;
+    margin-bottom: 10px;
+  }
+  .allowed-subtitle {
+    font-size: 20px;
+    font-weight: 300;
+    color: #44445a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .allowed-reset {
+    background: transparent;
+    border: 1px solid #1e1e28;
+    color: #44445a;
+    font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    cursor: pointer;
+    margin-top: 24px;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  /* TRADE NOT ALLOWED overlay */
+  #not-allowed-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #0a0a0c;
+    z-index: 100;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    text-align: center;
+  }
+  #not-allowed-overlay.visible {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+  }
+  .not-allowed-x {
+    font-size: 200px;
+    font-weight: 900;
+    color: #ff4455;
+    line-height: 1;
+  }
+  .not-allowed-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #ff4455;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-logo">Trade Gate</span>
+    <button class="reset-btn" id="topResetBtn">Reset</button>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress" style="width:0%"></div>
+  </div>
+  <div id="screens"></div>
+  <div id="not-allowed-overlay">
+    <div class="not-allowed-x">&#10007;</div>
+    <div class="not-allowed-text">Trade Not Allowed</div>
+  </div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+var SCREEN1_OPTIONS = [
+  "kis-k zóna",
+  "momentum kiindulási zóna",
+  "nyitó zóna",
+  "flip zóna",
+  "anti-zóna",
+  "likviditás söprés",
+  "iv",
+  "STF K törés",
+  "HTF setup",
+  "MOC"
+];
+
+var SCREEN3_OPTIONS = [
+  "csúzli",
+  "gyoruslás",
+  "P3",
+  "kontra setup behalása",
+  "1. trendpárna meggyűrés",
+  "Polaritás váltás",
+  "Choch - kis-k törés - bof",
+  "csúzli behalása",
+  "nincs"
+];
+var SCREEN3_NONE = "nincs";
+
+var SCREEN4_DANGER = [
+  "gyorsulás velünk szemben",
+  "P3",
+  "HTF ZÓNA",
+  "kései RSI cross",
+  "\u25b3 + kitörés után trendirányba",
+  "csúzli",
+  "csúzli behalása"
+];
+var SCREEN4_YELLOW = [
+  "trenddel szemben",
+  "Korrekciók méretének növekedése = ue",
+  "\u25b3 + kitörés után kontra"
+];
+
+var SCREEN5_DANGER = [
+  "NEHOGY KIMARADJAK!!!",
+  "MUSZÁJ NYERNEM!!!",
+  "TUDOM MI LESZ!!!"
+];
+
+var PRIMARY_ITEMS = [
+  "1-2", "W5", "K2k", "DKK", "C", "MOC",
+  "Öreg trendpárna meggyűrődés + BOF",
+  "Korai gyűrődés + Kk + (C1 cross + k)"
+];
+var SECONDARY_ITEMS = [
+  "RUNNING FLAT", "I-AVGH", "FLAT-C", "NPKP", "NPNP",
+  "Dk", "k2'", "sdiv", "ss+"
+];
+
+var TOTAL_SCREENS = 5;
+
+// ── State ─────────────────────────────────────────────────────────────────────
+var currentScreen        = 1;
+var screen1Selections    = [];
+var screen3Selections    = [];
+var screen4YellowSelected= [];
+var screen4YellowNext    = false;
+var screen4SemmiSelected = false;
+var primaryOpen          = false;
+var secondaryOpen        = false;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function inArray(arr, val) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === val) return true;
+  }
+  return false;
+}
+
+function removeFromArray(arr, val) {
+  var out = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] !== val) out.push(arr[i]);
+  }
+  return out;
+}
+
+function el(id) { return document.getElementById(id); }
+
+function setProgress(step) {
+  var pct = step <= 0 ? 0 : Math.round((step / TOTAL_SCREENS) * 100);
+  el('progress').style.width = pct + '%';
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+function reset() {
+  currentScreen         = 1;
+  screen1Selections     = [];
+  screen3Selections     = [];
+  screen4YellowSelected = [];
+  screen4YellowNext     = false;
+  screen4SemmiSelected  = false;
+  primaryOpen           = false;
+  secondaryOpen         = false;
+  render();
+}
+
+// ── TRADE NOT ALLOWED flash ───────────────────────────────────────────────────
+function showNotAllowed() {
+  var overlay = el('not-allowed-overlay');
+  overlay.className = 'visible';
+  setTimeout(function() {
+    overlay.className = '';
+    reset();
+  }, 2000);
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  setProgress(currentScreen - 1);
+  if (currentScreen > TOTAL_SCREENS) {
+    setProgress(TOTAL_SCREENS);
+    renderAllowed();
+  } else if (currentScreen === 1) {
+    renderScreen1();
+  } else if (currentScreen === 2) {
+    renderScreen2();
+  } else if (currentScreen === 3) {
+    renderScreen3();
+  } else if (currentScreen === 4) {
+    renderScreen4();
+  } else if (currentScreen === 5) {
+    renderScreen5();
+  }
+}
+
+function stepLabel(n) {
+  return '<div class="step-label">' + n + ' / ' + TOTAL_SCREENS + '</div>';
+}
+function screenTitle(t) {
+  return '<div class="screen-title">' + t + '</div>';
+}
+
+// ── Screen 1: HTF POI (multi-select) ─────────────────────────────────────────
+function renderScreen1() {
+  var btns = '';
+  for (var i = 0; i < SCREEN1_OPTIONS.length; i++) {
+    var opt = SCREEN1_OPTIONS[i];
+    var sel = inArray(screen1Selections, opt);
+    var cls = sel ? 'option-btn-green' : 'option-btn';
+    btns += '<button class="' + cls + '" id="s1btn' + i + '">' + opt + '</button>';
+  }
+  var nextBtn = screen1Selections.length > 0
+    ? '<button class="next-btn" id="s1next">Tovább</button>'
+    : '';
+  el('screens').innerHTML =
+    '<div class="screen">' +
+      stepLabel(1) +
+      screenTitle('HTF POI') +
+      '<div class="btn-grid">' + btns + '</div>' +
+      nextBtn +
+    '</div>';
+
+  for (var j = 0; j < SCREEN1_OPTIONS.length; j++) {
+    (function(idx) {
+      var btn = el('s1btn' + idx);
+      if (!btn) return;
+      btn.onclick = function() {
+        var opt = SCREEN1_OPTIONS[idx];
+        if (inArray(screen1Selections, opt)) {
+          screen1Selections = removeFromArray(screen1Selections, opt);
+        } else {
+          screen1Selections.push(opt);
+        }
+        renderScreen1();
+      };
+    })(j);
+  }
+  if (el('s1next')) {
+    el('s1next').onclick = function() { currentScreen = 2; render(); };
+  }
+}
+
+// ── Screen 2: VAN HELY? ───────────────────────────────────────────────────────
+function renderScreen2() {
+  el('screens').innerHTML =
+    '<div class="screen">' +
+      stepLabel(2) +
+      screenTitle('VAN HELY?') +
+      '<div class="yesno-wrap">' +
+        '<button class="yn-btn" id="s2yes">igen</button>' +
+        '<button class="yn-btn" id="s2no">nem</button>' +
+      '</div>' +
+    '</div>';
+  el('s2yes').onclick = function() { currentScreen = 3; render(); };
+  el('s2no').onclick  = function() { showNotAllowed(); };
+}
+
+// ── Screen 3: EXTRA TÁMOGATÓ KÖRÜLMÉNY (multi-select) ────────────────────────
+function renderScreen3() {
+  var btns = '';
+  for (var i = 0; i < SCREEN3_OPTIONS.length; i++) {
+    var opt = SCREEN3_OPTIONS[i];
+    var sel = inArray(screen3Selections, opt);
+    var cls = sel ? 'option-btn-green' : 'option-btn';
+    btns += '<button class="' + cls + '" id="s3btn' + i + '">' + opt + '</button>';
+  }
+  var nextBtn = (screen3Selections.length > 0 && !inArray(screen3Selections, SCREEN3_NONE))
+    ? '<button class="next-btn" id="s3next">Tovább</button>'
+    : '';
+  el('screens').innerHTML =
+    '<div class="screen">' +
+      stepLabel(3) +
+      screenTitle('EXTRA TÁMOGATÓ KÖRÜLMÉNY') +
+      '<div class="btn-grid">' + btns + '</div>' +
+      nextBtn +
+    '</div>';
+
+  for (var j = 0; j < SCREEN3_OPTIONS.length; j++) {
+    (function(idx) {
+      var btn = el('s3btn' + idx);
+      if (!btn) return;
+      btn.onclick = function() {
+        var opt = SCREEN3_OPTIONS[idx];
+        if (opt === SCREEN3_NONE) {
+          screen3Selections = [SCREEN3_NONE];
+          currentScreen = 4; render(); return;
+        }
+        if (inArray(screen3Selections, opt)) {
+          screen3Selections = removeFromArray(screen3Selections, opt);
+        } else {
+          screen3Selections = removeFromArray(screen3Selections, SCREEN3_NONE);
+          screen3Selections.push(opt);
+        }
+        renderScreen3();
+      };
+    })(j);
+  }
+  if (el('s3next')) {
+    el('s3next').onclick = function() { currentScreen = 4; render(); };
+  }
+}
+
+// ── Screen 4: MI SZÓL A KÖTÉS ELLEN? ─────────────────────────────────────────
+function renderScreen4() {
+  var dangerBtns = '';
+  for (var i = 0; i < SCREEN4_DANGER.length; i++) {
+    dangerBtns += '<button class="option-btn-danger" id="s4d' + i + '">' + SCREEN4_DANGER[i] + '</button>';
+  }
+  var yellowBtns = '';
+  for (var j = 0; j < SCREEN4_YELLOW.length; j++) {
+    var opt = SCREEN4_YELLOW[j];
+    var sel = inArray(screen4YellowSelected, opt);
+    var cls = sel ? 'option-btn-yellow' : 'option-btn';
+    yellowBtns += '<button class="' + cls + '" id="s4y' + j + '">' + opt + '</button>';
+  }
+  var nextBtn = screen4YellowNext ? '<button class="next-btn" id="s4next">Tovább</button>' : '';
+
+  el('screens').innerHTML =
+    '<div class="screen">' +
+      stepLabel(4) +
+      screenTitle('MI SZÓL A KÖTÉS ELLEN?') +
+      '<div class="btn-grid">' + dangerBtns + '</div>' +
+      '<hr class="divider">' +
+      '<div class="btn-grid">' + yellowBtns + '</div>' +
+      '<hr class="divider">' +
+      '<button class="semmi-btn" id="s4semmi">semmi</button>' +
+      nextBtn +
+    '</div>';
+
+  for (var di = 0; di < SCREEN4_DANGER.length; di++) {
+    (function(idx) {
+      var btn = el('s4d' + idx);
+      if (btn) btn.onclick = function() { showNotAllowed(); };
+    })(di);
+  }
+  for (var yi = 0; yi < SCREEN4_YELLOW.length; yi++) {
+    (function(idx) {
+      var opt = SCREEN4_YELLOW[idx];
+      var btn = el('s4y' + idx);
+      if (!btn) return;
+      btn.onclick = function() {
+        if (inArray(screen4YellowSelected, opt)) {
+          screen4YellowSelected = removeFromArray(screen4YellowSelected, opt);
+        } else {
+          screen4YellowSelected.push(opt);
+        }
+        screen4YellowNext = screen4YellowSelected.length > 0;
+        renderScreen4();
+      };
+    })(yi);
+  }
+  el('s4semmi').onclick = function() {
+    screen4YellowSelected = [];
+    screen4YellowNext     = false;
+    screen4SemmiSelected  = true;
+    currentScreen = 5; render();
+  };
+  if (el('s4next')) {
+    el('s4next').onclick = function() { currentScreen = 5; render(); };
+  }
+}
+
+// ── Screen 5: ÉRZELMI KÖTÉS? ─────────────────────────────────────────────────
+function renderScreen5() {
+  var dangerBtns = '';
+  for (var i = 0; i < SCREEN5_DANGER.length; i++) {
+    dangerBtns += '<button class="option-btn-danger" id="s5d' + i + '">' + SCREEN5_DANGER[i] + '</button>';
+  }
+  el('screens').innerHTML =
+    '<div class="screen">' +
+      stepLabel(5) +
+      screenTitle('ÉRZELMI KÖTÉS?') +
+      '<div class="btn-grid">' + dangerBtns + '</div>' +
+      '<button class="skip-btn" id="s5skip">SKIP? OK!</button>' +
+    '</div>';
+
+  for (var di = 0; di < SCREEN5_DANGER.length; di++) {
+    (function(idx) {
+      var btn = el('s5d' + idx);
+      if (btn) btn.onclick = function() { showNotAllowed(); };
+    })(di);
+  }
+  el('s5skip').onclick = function() { currentScreen = 6; render(); };
+}
+
+// ── TRADE ALLOWED ─────────────────────────────────────────────────────────────
+function renderAllowed() {
+  var primaryRows = '';
+  for (var i = 0; i < PRIMARY_ITEMS.length; i++) {
+    primaryRows += '<div class="setup-item">' + PRIMARY_ITEMS[i] + '</div>';
+  }
+  var secondaryRows = '';
+  for (var j = 0; j < SECONDARY_ITEMS.length; j++) {
+    secondaryRows += '<div class="setup-item">' + SECONDARY_ITEMS[j] + '</div>';
+  }
+
+  var pBlk  = primaryOpen   ? 'setup-block-open'  : 'setup-block';
+  var pHdr  = primaryOpen   ? 'setup-header-open' : 'setup-header';
+  var pLst  = primaryOpen   ? 'setup-list-open'   : 'setup-list';
+  var pChv  = primaryOpen   ? 'chevron-open'      : 'chevron';
+  var pArr  = primaryOpen   ? '&#9650;'           : '&#9660;';
+
+  var sBlk  = secondaryOpen ? 'setup-block-open'  : 'setup-block';
+  var sHdr  = secondaryOpen ? 'setup-header-open' : 'setup-header';
+  var sLst  = secondaryOpen ? 'setup-list-open'   : 'setup-list';
+  var sChv  = secondaryOpen ? 'chevron-open'      : 'chevron';
+  var sArr  = secondaryOpen ? '&#9650;'           : '&#9660;';
+
+  el('screens').innerHTML =
+    '<div class="allowed-screen">' +
+      '<div class="allowed-title">TRADE</div>' +
+      '<div class="allowed-title-white">ALLOWED</div>' +
+      '<div class="allowed-subtitle">Mehet a kötés</div>' +
+      '<div class="setup-container">' +
+        '<div class="' + pBlk + '">' +
+          '<button class="' + pHdr + '" id="btnPrimary">' +
+            '<span>PRIMARY SETUP</span>' +
+            '<span class="' + pChv + '">' + pArr + '</span>' +
+          '</button>' +
+          '<div class="' + pLst + '">' + primaryRows + '</div>' +
+        '</div>' +
+        '<div class="' + sBlk + '" style="margin-top:12px;">' +
+          '<button class="' + sHdr + '" id="btnSecondary">' +
+            '<span>SECONDARY SETUP</span>' +
+            '<span class="' + sChv + '">' + sArr + '</span>' +
+          '</button>' +
+          '<div class="' + sLst + '">' + secondaryRows + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button class="allowed-reset" id="allowedReset">Visszaállítás</button>' +
+    '</div>';
+
+  el('btnPrimary').onclick = function() {
+    primaryOpen = !primaryOpen;
+    renderAllowed();
+  };
+  el('btnSecondary').onclick = function() {
+    secondaryOpen = !secondaryOpen;
+    renderAllowed();
+  };
+  el('allowedReset').onclick = function() { reset(); };
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+el('topResetBtn').onclick = function() { reset(); };
+reset();
+</script>
+</body>
+</html>
